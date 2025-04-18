@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: Backend-intern-Project
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/backend-intern-project
+    username: root
+    password: gasubin991!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  error:
+    include-message: always
+
+jwt:
+  secret:
+    key: testtesttesttesttesttesttesttesttesttesttest
