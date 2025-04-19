@@ -4,8 +4,8 @@ import com.example.backend_intern_project.auth.dto.request.SigninRequest;
 import com.example.backend_intern_project.auth.dto.request.SignupRequest;
 import com.example.backend_intern_project.auth.dto.response.SigninResponse;
 import com.example.backend_intern_project.auth.dto.response.SignupResponse;
-import com.example.backend_intern_project.auth.exception.AuthException;
-import com.example.backend_intern_project.auth.exception.InvalidRequestException;
+import com.example.backend_intern_project.auth.exception.SigninException;
+import com.example.backend_intern_project.auth.exception.SignupException;
 import com.example.backend_intern_project.config.JwtUtil;
 import com.example.backend_intern_project.user.entity.User;
 import com.example.backend_intern_project.user.enums.UserRole;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -26,38 +25,34 @@ public class AuthService {
 
     @Transactional
     public SignupResponse signup(SignupRequest signupRequest) {
+        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+            throw new SignupException( "이미 가입된 사용자입니다.");
+        }
+
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
-        UserRole userRole = UserRole.of(signupRequest.getUserRole());
-
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new InvalidRequestException("이미 존재하는 이메일입니다.");
-        }
-
         User newUser = new User(
-            signupRequest.getEmail(),
+            signupRequest.getUsername(),
             encodedPassword,
-            userRole
+            signupRequest.getNickname(),
+            UserRole.USER
         );
-        User savedUser = userRepository.save(newUser);
 
-        String bearerToken = jwtUtil.createToken(savedUser.getEmail(), String.valueOf(userRole));
+        userRepository.save(newUser);
 
-        return new SignupResponse(bearerToken);
+        return new SignupResponse(newUser.getUsername(), newUser.getNickname(), newUser.getRole().name());
     }
 
-    public SigninResponse signin(SigninRequest signinRequest) {
-        User user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(
-            () -> new InvalidRequestException("가입되지 않은 유저입니다."));
+    @Transactional
+    public SigninResponse signin(SigninRequest request) throws SigninException {
+        User user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new SigninException("User not found"));
 
-        // 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 401을 반환합니다.
-        if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
-            throw new AuthException("잘못된 비밀번호입니다.");
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new SigninException("Invalid credentials");
         }
 
-        String bearerToken = jwtUtil.createToken(user.getEmail(),
-            String.valueOf(user.getUserRole()));
+        return new SigninResponse(jwtUtil.createToken(user.getId(),user.getRole()));
 
-        return new SigninResponse(bearerToken);
     }
 }
