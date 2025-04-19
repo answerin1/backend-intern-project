@@ -26,7 +26,15 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 안함
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll() // 인증 없이 접근 허용
+                .requestMatchers(
+                    "/**",
+                    "/signup",
+                    "/signin",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/docs/**"
+                ).permitAll()
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
             )
             .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
