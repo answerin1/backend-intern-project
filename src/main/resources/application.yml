@@ -23,5 +23,5 @@ server:
     include-message: always
 
 jwt:
-  secret-key: "your-secret-key"
+  secret-key: "teststetstetstetstetstetstetstetstetstetstetstetstetsetstetstettettstetsttts"
 
