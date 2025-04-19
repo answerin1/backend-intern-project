@@ -3,7 +3,7 @@ spring:
     name: Backend-intern-Project
 
   datasource:
-    url: jdbc:mysql://localhost:3306/backend-intern-project
+    url: jdbc:mysql://localhost:3306/backend_intern_project
     username: root
     password: gasubin991!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,5 +23,5 @@ server:
     include-message: always
 
 jwt:
-  secret:
-    key: testtesttesttesttesttesttesttesttesttesttest
+  secret-key: "your-secret-key"
+
