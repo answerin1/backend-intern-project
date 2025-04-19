@@ -1,47 +1,34 @@
 package com.example.backend_intern_project.user.entity;
 
-import com.example.backend_intern_project.auth.common.AuthUser;
-import com.example.backend_intern_project.auth.entity.Timestamped;
 import com.example.backend_intern_project.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
+@Getter
 @NoArgsConstructor
-@Table(name = "`user`")
-public class User extends Timestamped {
+public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String email;
+
+    private String username;
     private String password;
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole role;
 
-    public User(String email, String password, UserRole userRole) {
-        this.email = email;
-        this.password = password;
-        this.userRole = userRole;
+    public User(String username, String encodedPassword, String nickname, UserRole role) {
+        this.username = username;
+        this.password = encodedPassword;
+        this.nickname = nickname;
+        this.role = role;
     }
 
-    private User(Long id, String email, UserRole userRole) {
-        this.id = id;
-        this.email = email;
-        this.userRole = userRole;
+    public void changeRole(UserRole newRole) {
+        this.role = newRole;
     }
 
-    public static User fromAuthUser(AuthUser authUser) {
-        return new User(authUser.getId(), authUser.getEmail(), authUser.getUserRole());
-    }
-
-    public void changePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
 }
