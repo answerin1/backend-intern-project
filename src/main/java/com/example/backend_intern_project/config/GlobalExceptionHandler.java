@@ -1,7 +1,7 @@
 package com.example.backend_intern_project.config;
 
-import com.example.backend_intern_project.auth.exception.AuthException;
 import com.example.backend_intern_project.auth.exception.InvalidRequestException;
+import com.example.backend_intern_project.auth.exception.SignupException;
 import java.rmi.ServerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
         return getErrorResponse(status, ex.getMessage());
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<Map<String, Object>> handleAuthException(AuthException ex) {
+    @ExceptionHandler(SignupException.class)
+    public ResponseEntity<Map<String, Object>> handleSignupException(SignupException ex) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return getErrorResponse(status, ex.getMessage());
     }
