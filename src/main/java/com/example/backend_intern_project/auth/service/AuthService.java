@@ -44,10 +44,10 @@ public class AuthService {
     @Transactional
     public SigninResponse signin(SigninRequest request) throws IllegalArgumentException {
         User user = userRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            .orElseThrow(() -> new IllegalArgumentException("이미 존재하는 사용자입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
         return new SigninResponse(jwtUtil.createToken(user.getId(),user.getRole()));
