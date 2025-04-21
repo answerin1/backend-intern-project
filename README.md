@@ -11,8 +11,8 @@
 
 ## 🧡 배포 정보
 
-- **Base URL**: `http://3.34.1.144:8080`
-- **Swagger UI**: http://3.34.1.144:8080/swagger-ui/index.html
+- **Base URL**: `http://43.201.75.157:8080`
+- **Swagger UI**: http://43.201.75.157:8080/swagger-ui/index.html
 
 > EC2 보안 그룹에서 **8080 포트 인바운드 허용**이 되어 있어야 외부 접속이 가능합니다.
 
